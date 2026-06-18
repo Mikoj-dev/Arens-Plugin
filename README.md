@@ -1,4 +1,3 @@
-# Arens-Plugin
 ## ENGLISH
 # Arens Plugin
 
