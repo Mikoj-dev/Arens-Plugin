@@ -463,5 +463,472 @@ This plugin is created for educational purposes.
 
 [⬆ Back to Top](#arens-plugin)
 
+# Polish
+# Wtyczka Arens
+
+<div align="center">
+
+![Version](https://img.shields.io/badge/wersja-1.0--SNAPSHOT-blue)
+![Spigot](https://img.shields.io/badge/Spigot-1.20.1%2B-green)
+![Java](https://img.shields.io/badge/Java-17%2B-orange)
+![License](https://img.shields.io/badge/licencja-MIT-yellow)
+
+**Kompleksowa wtyczka arena dla Paper/Spigot 1.20.1+**
+
+Funkcje: system kolejek, GUI nagród, ranking, integracja z systemem walki, obsługa wielu języków i wiele instancji aren.
+
+[Funkcje](#funkcje) • [Instalacja](#instalacja) • [Komendy](#komendy) • [Konfiguracja](#konfiguracja) • [Przewodnik konfiguracji](#przewodnik-konfiguracji)
+
+</div>
+
+---
+
+## Spis treści
+
+- [Funkcje](#funkcje)
+- [Wymagania](#wymagania)
+- [Instalacja](#instalacja)
+- [Komendy](#komendy)
+  - [Komendy gracza](#komendy-gracza)
+  - [Komendy administratora](#komendy-administratora)
+- [Konfiguracja](#konfiguracja)
+  - [System językowy](#system-językowy)
+  - [Konfiguracja bazy danych](#konfiguracja-bazy-danych)
+  - [Integracja z systemem walki](#integracja-z-systemem-walki)
+  - [Ustawienia GUI](#ustawienia-gui)
+  - [Dozwolone komendy](#dozwolone-komendy)
+- [Wiele instancji aren](#wiele-instancji-aren)
+- [Placeholdery PlaceholderAPI](#placeholdery-placeholderapi)
+- [Przewodnik konfiguracji](#przewodnik-konfiguracji)
+- [Uprawnienia](#uprawnienia)
+- [Rozwiązywanie problemów](#rozwiązywanie-problemów)
+- [Współpraca](#współpraca)
+- [Licencja](#licencja)
+
+---
+
+## Funkcje
+
+### Funkcje podstawowe
+
+- **🎯 System kolejek aren** - Gracze mogą dołączać do kolejek aren i czekać na przeciwników
+- **⚔️ System meczów** - Automatyczne dobieranie graczy z odliczaniem, teleportacją i zamykaniem
+- **🎁 GUI nagród** - Paginowane GUI do zbierania wygranych przedmiotów z nawigacją i opcją czyszczenia
+- **🗺️ Wiele instancji aren** - Twórz wiele map pod jedną nazwą areny dla różnorodności
+- **🌍 Obsługa wielu języków** - Pełna obsługa języka polskiego i angielskiego z łatwym przełączaniem
+- **🛡️ Blokowanie komend** - Ogranicza komendy podczas meczów aren (tylko /msg, /r, /tell, /reply dozwolone)
+- **⚔️ Integracja z systemem walki** - Integracja z wtyczkami anti-logout przez PlaceholderAPI
+- **💾 Obsługa bazy danych** - Obsługa SQLite i MySQL dla statystyk graczy i nagród
+- **📊 Rozszerzenie PlaceholderAPI** - Placeholdery dla wygranych, przegranych, rankingu i najlepszych graczy
+- **📢 Globalne wiadomości** - Wszystkie wydarzenia aren są transmitowane do wszystkich graczy
+- **🎨 Ładne centra pomocy** - Pięknie sformatowane menu pomocy w obu językach
+- **🔄 Gorące przeładowanie** - Przeładuj konfigurację bez restartowania serwera
+
+### Funkcje zaawansowane
+
+- **Losowy wybór mapy** - Gdy istnieje wiele instancji, gracze są losowo przydzielani do dostępnych map
+- **Serializacja przedmiotów** - Wygrane przedmioty są bezpiecznie przechowywane w bazie danych i można je odebrać później
+- **Statystyki graczy** - Śledzenie wygranych, przegranych, łącznej liczby meczów i wskaźnika wygranych
+- **System rankingowy** - Automatyczny ranking na podstawie łącznej liczby wygranych
+- **Ochrona przed tagiem walki** - Zapobiega dołączaniu graczy do aren podczas walki
+
+---
+
+## Wymagania
+
+- **Serwer**: Paper/Spigot 1.20.1 lub wyższy
+- **Wtyczki**: PlaceholderAPI (wymagane)
+- **Java**: Java 17 lub wyższa
+- **Baza danych**: SQLite (domyślna) lub MySQL
+
+---
+
+## Instalacja
+
+### Ze źródła
+
+1. **Sklonuj repozytorium**
+   ```bash
+   git clone https://github.com/twojanazwa/arens.git
+   cd arens
+   ```
+
+2. **Zbuduj wtyczkę używając Maven**
+   ```bash
+   mvn clean package
+   ```
+
+3. **Zainstaluj wtyczkę**
+   - Skopiuj wygenerowany plik JAR z `target/arens-1.0-SNAPSHOT.jar`
+   - Umieść go w folderze `plugins` swojego serwera
+
+4. **Zrestartuj serwer**
+
+5. **Skonfiguruj wtyczkę**
+   - Edytuj `plugins/Arens/lang.yml` aby ustawić preferowany język
+   - Uruchom `/aareny reload` aby wygenerować odpowiedni plik konfiguracyjny
+   - Skonfiguruj ustawienia w `plugins/Arens/config.yml`
+
+### Z wydania
+
+1. Pobierz najnowsze wydanie ze strony [Releases](https://github.com/twojanazwa/arens/releases)
+2. Umieść plik JAR w folderze `plugins` swojego serwera
+3. Zrestartuj serwer
+4. Skonfiguruj zgodnie z powyższym opisem
+
+---
+
+## Komendy
+
+### Komendy gracza
+
+| Komenda | Opis | Aliasy |
+|---------|-------------|---------|
+| `/arena <nazwa>` | Dołącz do kolejki dla określonej areny | - |
+| `/arena leave` | Opuść bieżącą kolejkę areny | - |
+| `/arena help` | Pokaż pomoc komend areny | - |
+| `/areny odbierz` | Otwórz GUI nagród aby odebrać wygrane przedmioty (PL) | `/areny collect` (EN) |
+
+### Komendy administratora
+
+| Komenda | Opis | Uprawnienie |
+|---------|-------------|------------|
+| `/aareny create <nazwa> [instacja]` | Utwórz nową arenę (z opcjonalną instancją/mapą) | `arens.admin` |
+| `/aareny pos1 <nazwa> [instacja]` | Ustaw pozycję 1 (spawn dla gracza 1) | `arens.admin` |
+| `/aareny pos2 <nazwa> [instacja]` | Ustaw pozycję 2 (spawn dla gracza 2) | `arens.admin` |
+| `/aareny setpawn <nazwa> [instacja]` | Ustaw pozycję respawnu po zakończeniu meczu | `arens.admin` |
+| `/aareny list` | Lista wszystkich aren ze statusem | `arens.admin` |
+| `/aareny delete <nazwa> [instacja]` | Usuń arenę | `arens.admin` |
+| `/aareny reload` | Przeładuj konfigurację na podstawie ustawienia języka | `arens.admin` |
+| `/aareny help` | Pokaż pomoc komend administratora | `arens.admin` |
+
+---
+
+## Konfiguracja
+
+### System językowy
+
+Wtyczka obsługuje język polski i angielski. Aby zmienić język:
+
+1. Edytuj `plugins/Arens/lang.yml`:
+   ```yaml
+   # PL: Język PL | EN
+   # EN: Language PL | EN
+   lang: "EN"  # Zmień na "PL" dla języka polskiego
+   ```
+
+2. Uruchom `/aareny reload` aby zregenerować plik konfiguracyjny z wybranym językiem
+
+Wtyczka automatycznie:
+- Wygeneruje `config.yml` z wiadomościami w wybranym języku
+- Wyświetli menu pomocy w wybranym języku
+- Pokaże wszystkie wiadomości systemowe w wybranym języku
+
+### Konfiguracja bazy danych
+
+#### SQLite (Domyślne)
+
+```yaml
+database:
+  type: sqlite
+  sqlite:
+    file: arens.db
+```
+
+#### MySQL
+
+```yaml
+database:
+  type: mysql
+  mysql:
+    host: localhost
+    port: 3306
+    database: arens
+    username: root
+    password: password
+```
+
+### Integracja z systemem walki
+
+Integruje z wtyczkami anti-logout aby zapobiec dołączaniu graczy do aren podczas walki:
+
+```yaml
+combat_check:
+  enabled: true
+  placeholder: "%antylogout_status%"
+  blocked_value: "true"
+```
+
+Gdy włączone, gracze z wartością placeholdera pasującą do `blocked_value` nie mogą dołączać do kolejek aren.
+
+### Ustawienia GUI
+
+Skonfiguruj wygląd GUI nagród:
+
+```yaml
+gui:
+  rewards_size: 54
+  next_page_item: ARROW
+  prev_page_item: ARROW
+  clear_page_item: RED_DYE
+  fill_item: GRAY_STAINED_GLASS_PANE
+```
+
+### Dozwolone komendy podczas areny
+
+Komendy, które gracze mogą używać podczas meczu areny:
+
+```yaml
+allowed_commands:
+  - msg
+  - r
+  - tell
+  - reply
+```
+
+Wszystkie inne komendy są zablokowane podczas meczów aren.
+
+### Ustawienia odliczania
+
+```yaml
+countdown:
+  seconds: 3
+```
+
+Czas trwania odliczania przed rozpoczęciem meczu po teleportacji obu graczy.
+
+---
+
+## Wiele instancji aren
+
+Wtyczka obsługuje tworzenie wielu map (instancji) pod jedną nazwą areny. Pozwala to na różnorodność w rozgrywce.
+
+### Tworzenie wielu instancji
+
+```bash
+# Utwórz bazową arenę
+/aareny create duel
+
+# Utwórz dodatkowe mapy
+/aareny create duel map1
+/aareny create duel map2
+/aareny create duel map3
+```
+
+### Konfiguracja każdej instancji
+
+```bash
+# Skonfiguruj map1
+/aareny pos1 duel map1
+/aareny pos2 duel map1
+/aareny setpawn duel map1
+
+# Skonfiguruj map2
+/aareny pos1 duel map2
+/aareny pos2 duel map2
+/aareny setpawn duel map2
+```
+
+### Jak to działa
+
+- Gracze dołączają używając `/arena duel` (bez określania instancji)
+- Wtyczka losowo wybiera dostępną instancję/mapę
+- Zapewnia to różnorodność i zapobiega graniu zawsze na tej samej mapie
+- Użyj `/aareny list` aby zobaczyć wszystkie instancje i ich status konfiguracji
+
+---
+
+## Placeholdery PlaceholderAPI
+
+Wtyczka udostępnia następujące placeholdery do użytku w innych wtyczkach:
+
+| Placeholder | Opis |
+|-------------|-------------|
+| `%arens_wins%` | Łączna liczba wygranych gracza |
+| `%arens_losses%` | Łączna liczba przegranych gracza |
+| `%arens_total_matches%` | Łączna liczba meczów gracza (wygrane + przegrane) |
+| `%arens_win_rate%` | Procent wskaźnika wygranych gracza |
+| `%arens_ranking%` | Pozycja rankingu gracza (1 = najwyższa) |
+| `%arens_top_player%` | Nazwa najlepszego gracza |
+| `%arens_top_wins%` | Wygrane najlepszego gracza |
+
+### Przykład użycia
+
+```
+Tablica wyników:
+- §aWygrane: %arens_wins%
+- §cPrzegrane: %arens_losses%
+- §eWskaźnik wygranych: %arens_win_rate%%
+- §6Rank: #%arens_ranking%
+```
+
+---
+
+## Przewodnik konfiguracji
+
+### Podstawowa konfiguracja
+
+1. **Utwórz arenę**
+   ```bash
+   /aareny create myarena
+   ```
+
+2. **Ustaw pozycję 1** (stań na spawnie gracza 1)
+   ```bash
+   /aareny pos1 myarena
+   ```
+
+3. **Ustaw pozycję 2** (stań na spawnie gracza 2)
+   ```bash
+   /aareny pos2 myarena
+   ```
+
+4. **Ustaw pozycję respawnu** (stań w lokalizacji respawnu)
+   ```bash
+   /aareny setpawn myarena
+   ```
+
+5. **Przetestuj arenę**
+   ```bash
+   /arena myarena
+   ```
+
+### Zaawansowana konfiguracja z wieloma mapami
+
+1. **Utwórz bazową arenę**
+   ```bash
+   /aareny create duel
+   ```
+
+2. **Utwórz wiele instancji map**
+   ```bash
+   /aareny create duel desert
+   /aareny create duel forest
+   /aareny create duel ice
+   ```
+
+3. **Skonfiguruj każdą mapę**
+   ```bash
+   # Mapa pustynna
+   /aareny pos1 duel desert
+   /aareny pos2 duel desert
+   /aareny setpawn duel desert
+   
+   # Mapa leśna
+   /aareny pos1 duel forest
+   /aareny pos2 duel forest
+   /aareny setpawn duel forest
+   
+   # Mapa lodowa
+   /aareny pos1 duel ice
+   /aareny pos2 duel ice
+   /aareny setpawn duel ice
+   ```
+
+4. **Zweryfikuj konfigurację**
+   ```bash
+   /aareny list
+   ```
+
+5. **Gracze mogą teraz dołączać**
+   ```bash
+   /arena duel
+   ```
+   Wtyczka losowo wybierze jedną ze skonfigurowanych map.
+
+---
+
+## Uprawnienia
+
+| Uprawnienie | Opis | Domyślne |
+|-----------|-------------|---------|
+| `arens.admin` | Dostęp do wszystkich komend administratora aren | OP |
+
+---
+
+## Rozwiązywanie problemów
+
+### Wtyczka nie ładuje się
+
+- Upewnij się, że używasz Paper/Spigot 1.20.1 lub wyższego
+- Sprawdź, czy PlaceholderAPI jest zainstalowane
+- Zweryfikuj, czy Java 17+ jest zainstalowana
+- Sprawdź konsolę serwera pod kątem komunikatów o błędach
+
+### Arena nie została znaleziona
+
+- Użyj `/aareny list` aby zobaczyć wszystkie skonfigurowane areny
+- Zweryfikuj, czy nazwa areny jest wpisana poprawnie
+- Jeśli używasz instancji, sprawdź nazwę instancji
+
+### Gracze nie mogą dołączyć do areny
+
+- Zweryfikuj, czy arena jest w pełni skonfigurowana (pos1, pos2, spawn ustawione)
+- Sprawdź, czy system walki blokuje gracza
+- Upewnij się, że gracz nie jest już w kolejce lub meczu
+
+### Nagrody nie są zapisywane
+
+- Sprawdź połączenie z bazą danych w config.yml
+- Zweryfikuj, czy plik bazy danych istnieje (dla SQLite)
+- Sprawdź logi serwera pod kątem błędów bazy danych
+
+### Język się nie zmienia
+
+- Zweryfikuj, czy `lang.yml` ma poprawne ustawienie języka
+- Uruchom `/aareny reload` po zmianie języka
+- Sprawdź, czy `config_pl.yml` i `config_en.yml` istnieją w folderze wtyczki
+
+---
+
+## Współpraca
+
+Współpraca jest mile widziana! Proszę postępować zgodnie z poniższymi krokami:
+
+1. Fork repozytorium
+2. Utwórz gałąź funkcji (`git checkout -b feature/amazing-feature`)
+3. Zatwierdź zmiany (`git commit -m 'Add amazing feature'`)
+4. Wypchnij do gałęzi (`git push origin feature/amazing-feature`)
+5. Otwórz Pull Request
+
+### Konfiguracja deweloperska
+
+1. Sklonuj repozytorium
+2. Zaimportuj do swojego IDE (IntelliJ IDEA zalecane)
+3. Zbuduj używając Maven: `mvn clean package`
+4. Przetestuj na lokalnym serwerze Paper
+
+---
+
+## Licencja
+
+Ta wtyczka została stworzona do celów edukacyjnych.
+
+---
+
+## Wsparcie
+
+- **Problemy**: Zgłaszaj błędy i prośby o funkcje na [GitHub Issues](https://github.com/twojanazwa/arens/issues)
+- **Discord**: Dołącz do naszego serwera Discord dla wsparcia (wkrótce)
+- **Dokumentacja**: Sprawdź ten README i komentarze w kodzie
+
+---
+
+## Podziękowania
+
+- Zbudowano z [Paper API](https://papermc.io/)
+- Używa [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
+- Obsługa bazy danych przez [SQLite JDBC](https://github.com/xerial/sqlite-jdbc) i [MySQL Connector](https://dev.mysql.com/downloads/connector/j/)
+
+---
+
+<div align="center">
+
+**Stworzono z ❤️ dla społeczności Minecraft**
+
+[⬆ Powrót do góry](#wtyczka-arens)
+
+</div>
+
 </div>
 
